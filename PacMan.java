@@ -83,6 +83,11 @@ public class PacMan extends JPanel {
         pacmanDownImage  = new ImageIcon(Objects.requireNonNull(getClass().getResource("./img/pacmanDown.png"))).getImage();
         pacmanLeftImage  = new ImageIcon(Objects.requireNonNull(getClass().getResource("./img/pacmanLeft.png"))).getImage();
         pacmanRightImage = new ImageIcon(Objects.requireNonNull(getClass().getResource("./img/pacmanRight.png"))).getImage();
+
+        loadMap();
+        System.out.println(walls.size());
+        System.out.println(foods.size());
+        System.out.println(ghosts.size());
     }
 
     public void loadMap(){
@@ -95,9 +100,46 @@ public class PacMan extends JPanel {
                 String row = tileMap[r];
                 char tileMapChar = row.charAt(c);
 
-                int x = c*tileSize;
-                int y = r*tileSize;
+                int x = c * tileSize;
+                int y = r * tileSize;
+
+                if(tileMapChar=='X'){
+                    Block wall =new Block(wallImage,x,y,tileSize,tileSize);
+                    walls.add(wall);
+                }
+                else if(tileMapChar=='b'){
+                    Block ghost =new Block(blueGhostImage,x,y,tileSize,tileSize);
+                    ghosts.add(ghost);
+                }
+                else if(tileMapChar=='o'){
+                    Block ghost =new Block(orangeGhostImage,x,y,tileSize,tileSize);
+                    ghosts.add(ghost);
+                }
+                else if(tileMapChar=='p'){
+                    Block ghost =new Block(pinkGhostImage,x,y,tileSize,tileSize);
+                    ghosts.add(ghost);
+                }
+                else if(tileMapChar=='r'){
+                    Block ghost =new Block(redGhostImage,x,y,tileSize,tileSize);
+                    ghosts.add(ghost);
+                }
+                else if(tileMapChar=='P'){
+                    pacman =new Block(pacmanRightImage,x,y,tileSize,tileSize);
+                }
+                else if(tileMapChar==' '){
+                    Block food = new Block(null,x+14,y+14,4,4);
+                    foods.add(food);
+                }
             }
         }
+    }
+    
+    public void paintComponent(Graphics g){
+        super.paintComponent(g);
+        draw(g);
+    }
+
+    public void draw(Graphics g){
+        g.drawRect(pacman.x,pacman.y,pacman.width,pacman.height);
     }
 }
