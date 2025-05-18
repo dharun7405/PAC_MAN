@@ -17,8 +17,10 @@ public class Main {
 
         ImageIcon icon = new ImageIcon("./img/redGhost.png");
         frame.setIconImage(icon.getImage());
-        frame.add(new PacMan());
+        PacMan pacmanGame = new PacMan();
+        frame.add(pacmanGame);
         frame.pack();
+        pacmanGame.requestFocus();
         frame.setVisible(true);
     }
 }

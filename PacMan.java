@@ -1,8 +1,11 @@
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.*;
 
-public class PacMan extends JPanel {
+
+public class PacMan extends JPanel implements ActionListener,KeyListener {
     class Block{
         int x;
         int y;
@@ -11,6 +14,9 @@ public class PacMan extends JPanel {
         Image image;
         int startX;
         int startY;
+        char direction = 'U';
+        int velocityX = 0;
+        int velocityY = 0;
 
         Block(Image image,int x,int y,int width,int height){
             this.image=image;
@@ -20,6 +26,15 @@ public class PacMan extends JPanel {
             this.height=height;
             this.startX=x;
             this.startY=y;
+        }
+
+        void updateDirection(char direction){
+            this.direction=direction;
+            updateVelocity();
+        }
+
+        void updateVelocity(){
+
         }
     }
 
@@ -43,6 +58,7 @@ public class PacMan extends JPanel {
     HashSet<Block> foods;
     HashSet<Block> ghosts;
     Block pacman;
+    Timer gameLoop;
 
     //X = wall, O = skip, P = pac man, ' ' = food
     //Ghosts: b = blue, o = orange, p = pink, r = red
@@ -73,6 +89,8 @@ public class PacMan extends JPanel {
     PacMan(){
         setPreferredSize(new Dimension(boardWidth,boardHeight));
         setBackground(Color.black);
+        addKeyListener(this);
+        setFocusable(true);
 
         wallImage        = new ImageIcon(Objects.requireNonNull(getClass().getResource("./img/wall.png"))).getImage();
         blueGhostImage   = new ImageIcon(Objects.requireNonNull(getClass().getResource("./img/blueGhost.png"))).getImage();
@@ -85,6 +103,9 @@ public class PacMan extends JPanel {
         pacmanRightImage = new ImageIcon(Objects.requireNonNull(getClass().getResource("./img/pacmanRight.png"))).getImage();
 
         loadMap();
+        gameLoop = new Timer(50,this);
+        gameLoop.start();
+
         System.out.println(walls.size());
         System.out.println(foods.size());
         System.out.println(ghosts.size());
@@ -133,13 +154,42 @@ public class PacMan extends JPanel {
             }
         }
     }
-    
+
     public void paintComponent(Graphics g){
         super.paintComponent(g);
         draw(g);
     }
 
     public void draw(Graphics g){
-        g.drawRect(pacman.x,pacman.y,pacman.width,pacman.height);
+        g.drawImage(pacman.image,pacman.x,pacman.y,pacman.width,pacman.height,null);
+
+        for(Block ghost : ghosts){
+            g.drawImage(ghost.image,ghost.x,ghost.y,ghost.width,ghost.height,null);
+        }
+
+        for(Block wall : walls){
+            g.drawImage(wall.image,wall.x,wall.y,wall.width,wall.height,null);
+        }
+
+        g.setColor(Color.WHITE);
+        for(Block food : foods){
+            g.drawRect(food.x,food.y,food.width,food.height);
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        repaint();
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
+
+    @Override
+    public void keyPressed(KeyEvent e) {}
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        System.out.println("KeyEvent" + e.getKeyCode());
     }
 }
