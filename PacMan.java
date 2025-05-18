@@ -29,8 +29,19 @@ public class PacMan extends JPanel implements ActionListener,KeyListener {
         }
 
         void updateDirection(char direction){
+            char prevDirection = this.direction;
             this.direction=direction;
             updateVelocity();
+            this.x += this.velocityX;
+            this.y += this.velocityY;
+            for(Block wall : walls){
+                if(collision(this,wall)){
+                    this.x -= this.velocityX;
+                    this.y -= this.velocityY;
+                    this.direction = prevDirection;
+                    updateVelocity();
+                }
+            }
         }
 
         void updateVelocity(){
@@ -197,6 +208,22 @@ public class PacMan extends JPanel implements ActionListener,KeyListener {
     public void move(){
         pacman.x += pacman.velocityX;
         pacman.y += pacman.velocityY;
+
+        //CHECK WALL COLLISIONS
+        for(Block wall : walls){
+            if(collision(pacman,wall)){
+                pacman.x -= pacman.velocityX;
+                pacman.y -= pacman.velocityY;
+                break;
+            }
+        }
+    }
+
+    public boolean collision(Block a,Block b){
+        return  a.x < b.x + b.width &&
+                a.x + a.width > b.x &&
+                a.y < b.y + b.height &&
+                a.y + a.height > b.y;
     }
 
     @Override
@@ -218,6 +245,13 @@ public class PacMan extends JPanel implements ActionListener,KeyListener {
             case KeyEvent.VK_DOWN -> pacman.updateDirection('D');
             case KeyEvent.VK_LEFT -> pacman.updateDirection('L');
             case KeyEvent.VK_RIGHT -> pacman.updateDirection('R');
+        }
+
+        switch(pacman.direction){
+            case 'U' -> pacman.image=pacmanUpImage;
+            case 'D' -> pacman.image=pacmanDownImage;
+            case 'L' -> pacman.image=pacmanLeftImage;
+            case 'R' -> pacman.image=pacmanRightImage;
         }
     }
 }
